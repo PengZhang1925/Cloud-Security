@@ -1,0 +1,333 @@
+
+<html>
+<head>
+<script>
+
+
+function encrypt(){
+	var plain=document.getElementById("plain").value;
+	var res="";
+	var temp=[];
+	var temp1=[];
+	var SW=[];
+	var tempA=[];
+	var tempB=[];
+	var p4a=[];
+	var p4b=[];
+	var p4=[];
+	var input=[];
+	var permuted=[];
+	var permuted1=[];
+	var ep=[];
+	var mat= new Array(2);
+	var matA= new Array(2);
+	var matB= new Array(2);
+	var xor1= new Array(2);
+	var xor2= new Array(2);
+	var s0 = [[1,0,3,2],[3,2,1,0],[0,2,1,3],[3,1,3,2]];
+	var s1 = [[0,1,2,3],[2,0,1,3],[3,0,1,0],[2,1,0,3]];
+	var ipright=[];
+	var L4=[];
+	var R4=[];
+	var keyA=document.getElementById("keya").value;
+	var keyB=document.getElementById("keyb").value;
+	//first loop
+	for(var i=0;i<plain.length;i++){
+		temp.push(plain.charAt(i));
+		tempA.push(keyA.charAt(i));
+		tempB.push(keyB.charAt(i))
+	}	for(var k=0;k<2;k++){
+		mat[k]= new Array(4);
+		matA[k]= new Array(4);
+		matB[k]= new Array(4);
+		xor1[k]= new Array(4);
+		xor2[k]= new Array(4);
+	}
+	permuted[0]=temp[1];
+	permuted[1]=temp[5];
+	permuted[2]=temp[2];
+	permuted[3]=temp[0];
+	permuted[4]=temp[3];
+	permuted[5]=temp[7];
+	permuted[6]=temp[4];
+	permuted[7]=temp[6];
+	
+	for(var e=0;e<4;e++){
+		L4[e]=permuted[e];
+		R4[e]=permuted[e+4];
+	}
+	
+	for(var j=0;j<permuted.length;j++){
+		if(j<4){
+			ipright[j]=permuted[j+4];
+		}else{
+			ipright[j]=permuted[j];
+		}
+	}
+
+	ep[0]=ipright[3];	
+	ep[1]=ipright[0];	
+	ep[2]=ipright[1];	
+	ep[3]=ipright[2];	
+	ep[4]=ipright[5];	
+	ep[5]=ipright[6];	
+	ep[6]=ipright[7];	
+	ep[7]=ipright[4];	
+	for(var x=0;x<2;x++){
+	   for(var y=0;y<4;y++){
+		if(x<1){
+		    mat[x][y]=ep[y];
+		}else{mat[x][y]=ep[y+4];}
+	   }
+	}
+	for(var m=0;m<2;m++){
+	   for(var n=0;n<4;n++){
+		if(m<1){
+		    matA[m][n]=tempA[n];
+		}else{matA[m][n]=tempA[n+4];}
+	   }
+	}
+	for(var a=0;a<2;a++){
+	   for(var b=0;b<4;b++){
+		if(matA[a][b] == mat[a][b]){
+		    xor1[a][b] = 0;
+		}else{xor1[a][b] = 1;}
+	   }
+	}
+	input[0]=parseInt((xor1[0][0].toString()+xor1[0][3].toString()),2);
+	input[1]=parseInt((xor1[0][1].toString()+xor1[0][2].toString()),2);
+	input[2]=parseInt((xor1[1][0].toString()+xor1[1][3].toString()),2);
+	input[3]=parseInt((xor1[1][1].toString()+xor1[1][2].toString()),2);
+	var res1="";
+	if(s0[input[0]][input[1]].toString(2)==0){
+	    res1 = "00" +s1[input[2]][input[3]].toString(2);
+	    if(s1[input[2]][input[3]].toString(2)==0){
+	    res1 = "0000";
+	    }
+	}
+	if(s1[input[2]][input[3]].toString(2)==0){
+	    res1 = s0[input[0]][input[1]].toString(2)+"00";
+	    if(s0[input[0]][input[1]].toString(2)==0){
+	    res1 = "0000";
+	    }
+	}else{
+	    res1 = s0[input[0]][input[1]].toString(2) + s1[input[2]][input[3]].toString(2);}
+	for(var d=0;d<res1.length;d++){
+	   p4a.push(res1.charAt(d));
+	}
+	p4[0]=p4a[1];
+	p4[1]=p4a[3];
+	p4[2]=p4a[2];
+	p4[3]=p4a[0];
+	var res2 = [];
+	var res3 = "";
+	for(var f=0;f<4;f++){
+	    if(p4[f]==L4[f]){res2[f]=0;}else{res2[f]=1;}
+	}
+	for(var g=0;g<8;g++){
+	    if(g<4){
+		res3+=R4[g];
+	    }else{res3+=res2[g-4];}
+	}
+	//second loop
+	var newplain = res3;
+	for(var i=0;i<newplain.length;i++){
+		SW.push(newplain.charAt(i));
+	}
+	
+	for(var e=0;e<4;e++){
+		L4[e]=SW[e];
+		R4[e]=SW[e+4];
+	}
+	
+	for(var j=0;j<SW.length;j++){
+		if(j<4){
+			ipright[j]=SW[j+4];
+		}else{
+			ipright[j]=SW[j];
+		}
+	}
+
+	ep[0]=ipright[3];	
+	ep[1]=ipright[0];	
+	ep[2]=ipright[1];	
+	ep[3]=ipright[2];	
+	ep[4]=ipright[5];	
+	ep[5]=ipright[6];	
+	ep[6]=ipright[7];	
+	ep[7]=ipright[4];	
+	for(var x=0;x<2;x++){
+	   for(var y=0;y<4;y++){
+		if(x<1){
+		    mat[x][y]=ep[y];
+		}else{mat[x][y]=ep[y+4];}
+	   }
+	}
+	for(var m=0;m<2;m++){
+	   for(var n=0;n<4;n++){
+		if(m<1){
+		    matB[m][n]=tempB[n];
+		}else{matB[m][n]=tempB[n+4];}
+	   }
+	}
+	for(var a=0;a<2;a++){
+	   for(var b=0;b<4;b++){
+		if(matB[a][b] == mat[a][b]){
+		    xor2[a][b] = 0;
+		}else{xor2[a][b] = 1;}
+	   }
+	}
+	input[0]=parseInt((xor2[0][0].toString()+xor2[0][3].toString()),2);
+	input[1]=parseInt((xor2[0][1].toString()+xor2[0][2].toString()),2);
+	input[2]=parseInt((xor2[1][0].toString()+xor2[1][3].toString()),2);
+	input[3]=parseInt((xor2[1][1].toString()+xor2[1][2].toString()),2);
+	res1 = "";
+	if(s0[input[0]][input[1]].toString(2)==0){
+	    res1 = "00" +s1[input[2]][input[3]].toString(2);
+	    if(s1[input[2]][input[3]].toString(2)==0){
+	    res1 = "0000";
+	    }
+	}
+	if(s1[input[2]][input[3]].toString(2)==0){
+	    res1 = s0[input[0]][input[1]].toString(2)+"00";
+	    if(s0[input[0]][input[1]].toString(2)==0){
+	    res1 = "0000";
+	    }
+	}else{
+	    res1 = s0[input[0]][input[1]].toString(2) + s1[input[2]][input[3]].toString(2);}
+	for(var d=0;d<res1.length;d++){
+	   p4b.push(res1.charAt(d));
+	}
+	p4[0]=p4b[1];
+	p4[1]=p4b[3];
+	p4[2]=p4b[2];
+	p4[3]=p4b[0];
+	var resfinal = [];
+	for(var f=0;f<4;f++){
+	    if(p4[f]==L4[f]){resfinal[f]=0;}else{resfinal[f]=1;}
+	}
+	
+	var final="";
+	for(var g=0;g<8;g++){
+	    if(g<4){
+		temp1[g]=resfinal[g];
+	    }else{temp1[g]=res2[g-4];}
+	}
+	permuted1[0]=temp1[3];
+	permuted1[1]=temp1[0];
+	permuted1[2]=temp1[2];
+	permuted1[3]=temp1[4];
+	permuted1[4]=temp1[6];
+	permuted1[5]=temp1[1];
+	permuted1[6]=temp1[7];
+	permuted1[7]=temp1[5];
+	for(var h=0;h<permuted1.length;h++){
+	    final+=permuted1[h];
+	}
+	document.getElementById("cipher").innerHTML =final;
+
+}
+
+function key(){
+	var key=document.getElementById("key").value;
+	var result=[];
+	var permuted=[10];
+	var permuted1=[10];
+	var permuted2=[10];
+	var keyleft=[5];
+	var keyleft1=[5];
+	var keyright=[5];
+	var keyright1=[5];
+	var keyA=[8];
+	var keyB=[8];
+	var newKey1="";
+	var newKey2="";
+	for(var i=0;i<key.length;i++){
+		result.push(key.charAt(i));
+	}
+	permuted[0]=result[2];
+	permuted[1]=result[4];
+	permuted[2]=result[1];
+	permuted[3]=result[6];
+	permuted[4]=result[3];
+	permuted[5]=result[9];
+	permuted[6]=result[0];
+	permuted[7]=result[8];
+	permuted[8]=result[7];
+	permuted[9]=result[5];
+	
+
+	keyleft[4] = permuted[0];
+	keyleft[0] = permuted[1];
+        keyleft[1] = permuted[2];
+	keyleft[2] = permuted[3];
+	keyleft[3] = permuted[4];
+
+	keyright[0] = permuted[6];
+	keyright[1] = permuted[7];
+	keyright[2] = permuted[8];
+	keyright[3] = permuted[9];
+	keyright[4] = permuted[5];
+
+	for(var j=0;j<permuted.length;j++){
+		if(j<5){permuted1[j]=keyleft[j]}
+		else{permuted1[j]=keyright[j-5]};
+}
+	keyA[0]=permuted1[5];
+	keyA[1]=permuted1[2];
+	keyA[2]=permuted1[6];
+	keyA[3]=permuted1[3];
+	keyA[4]=permuted1[7];
+	keyA[5]=permuted1[4];
+	keyA[6]=permuted1[9];
+	keyA[7]=permuted1[8];
+	for(var k=0;k<keyA.length;k++){
+	    newKey1 += keyA[k];
+	}
+	document.getElementById("keya").value= newKey1;
+
+	
+	keyleft1[0] = permuted[3];
+	keyleft1[1] = permuted[4];
+        keyleft1[2] = permuted[0];
+	keyleft1[3] = permuted[1];
+	keyleft1[4] = permuted[2];
+
+	keyright1[0] = permuted[8];
+	keyright1[1] = permuted[9];
+	keyright1[2] = permuted[5];
+	keyright1[3] = permuted[6];
+	keyright1[4] = permuted[7];
+
+	for(var y=0;y<permuted.length;y++){
+		if(y<5){permuted2[y]=keyleft1[y]}
+		else{permuted2[y]=keyright1[y-5]};
+}	
+	keyB[0]=permuted2[5];
+	keyB[1]=permuted2[2];
+	keyB[2]=permuted2[6];
+	keyB[3]=permuted2[3];
+	keyB[4]=permuted2[7];
+	keyB[5]=permuted2[4];
+	keyB[6]=permuted2[9];
+	keyB[7]=permuted2[8];
+	for(var k=0;k<keyB.length;k++){
+	    newKey2 += keyB[k];
+	}
+	document.getElementById("keyb").value = newKey2;}
+</script>
+
+
+</head>
+<body>
+<title>S-DES example Encryption</title>
+Plaintext:<input id="plain" value="10111101"/><BR>
+key schedule:<input type="number" id="key"  value="1010000010"/><BR>
+keyA = <p> <input type="number" id="keya"></p>
+keyB = <p> <input type="number" id="keyb"></p>
+Ciphertext:<p id="cipher"></p>
+<input type="button" value="Generate" onClick="key()"/>
+<input type="button" value="Encrypt" onClick="encrypt()"/>
+</body>
+
+</html>

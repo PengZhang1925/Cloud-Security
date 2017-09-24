@@ -1,0 +1,104 @@
+<html>
+<body>
+<head>
+<title>S-DES example</title>
+key schedule: <input type="number" id="key"/><BR>
+keyA = <p id="keya"></p>
+keyB = <p id="keyb"></p>
+<input type="button" value="Generate" onClick="schedule()"/>
+</head>
+
+<script>
+function schedule(){
+	var key=document.getElementById("key").value;
+	var result=[];
+	var permuted=[10];
+	var permuted1=[10];
+	var permuted2=[10];
+	var keyleft=[5];
+	var keyleft1=[5];
+	var keyright=[5];
+	var keyright1=[5];
+	var keyA=[8];
+	var keyB=[8];
+	var newKey1="";
+	var newKey2="";
+	for(var i=0;i<key.length;i++){
+		result.push(key.charAt(i));
+	}
+	permuted[0]=result[2];
+	permuted[1]=result[4];
+	permuted[2]=result[1];
+	permuted[3]=result[6];
+	permuted[4]=result[3];
+	permuted[5]=result[9];
+	permuted[6]=result[0];
+	permuted[7]=result[8];
+	permuted[8]=result[7];
+	permuted[9]=result[5];
+	
+
+	keyleft[4] = permuted[0];
+	keyleft[0] = permuted[1];
+        keyleft[1] = permuted[2];
+	keyleft[2] = permuted[3];
+	keyleft[3] = permuted[4];
+
+	keyright[0] = permuted[6];
+	keyright[1] = permuted[7];
+	keyright[2] = permuted[8];
+	keyright[3] = permuted[9];
+	keyright[4] = permuted[5];
+
+	for(var j=0;j<permuted.length;j++){
+		if(j<5){permuted1[j]=keyleft[j]}
+		else{permuted1[j]=keyright[j-5]};
+}
+	keyA[0]=permuted1[5];
+	keyA[1]=permuted1[2];
+	keyA[2]=permuted1[6];
+	keyA[3]=permuted1[3];
+	keyA[4]=permuted1[7];
+	keyA[5]=permuted1[4];
+	keyA[6]=permuted1[9];
+	keyA[7]=permuted1[8];
+	for(var k=0;k<keyA.length;k++){
+	newKey1 += keyA[k];
+}
+
+	document.getElementById("keya").innerHTML = newKey1;
+
+	
+	keyleft1[0] = permuted[3];
+	keyleft1[1] = permuted[4];
+        keyleft1[2] = permuted[0];
+	keyleft1[3] = permuted[1];
+	keyleft1[4] = permuted[2];
+
+	keyright1[0] = permuted[8];
+	keyright1[1] = permuted[9];
+	keyright1[2] = permuted[5];
+	keyright1[3] = permuted[6];
+	keyright1[4] = permuted[7];
+
+	for(var y=0;y<permuted.length;y++){
+		if(y<5){permuted2[y]=keyleft1[y]}
+		else{permuted2[y]=keyright1[y-5]};
+}	
+	keyB[0]=permuted2[5];
+	keyB[1]=permuted2[2];
+	keyB[2]=permuted2[6];
+	keyB[3]=permuted2[3];
+	keyB[4]=permuted2[7];
+	keyB[5]=permuted2[4];
+	keyB[6]=permuted2[9];
+	keyB[7]=permuted2[8];
+	for(var k=0;k<keyB.length;k++){
+	    newKey2 += keyB[k];
+	}
+	document.getElementById("keyb").innerHTML = newKey2;
+}
+	
+</script>
+</body>
+</html>
